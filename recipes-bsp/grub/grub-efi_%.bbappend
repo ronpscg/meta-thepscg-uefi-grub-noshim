@@ -80,7 +80,7 @@ do_mkimage() {
         bbdebug 3 -e "\x1b[42m Making the image - SLIGHTLY overriding\x1b[0m"
         
         # The problem with the ../cfg file is that it is parsed *VERY* early during the boot, before loading modules, and most of the things you need are not available there.
-        cat ../cfg
+        # cat ../cfg # I removed cfg, I embedded a file instead
 
         echo "S=${S}"
         ls "${S}"

@@ -7,10 +7,6 @@ GRUBPLATFORM = "efi"
 DEPENDS:append = " grub-native"
 RDEPENDS:${PN} = "grub-common virtual-grub-bootconf"
 
-SRC_URI += " \
-           file://cfg \
-          "
-
 # Avoid resetting S
 # S = "${WORKDIR}/grub-${PV}"
 
