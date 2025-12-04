@@ -55,6 +55,32 @@ mkimage_helper_embedded_config_helper() {
 	               ${GRUB_MKIMAGE_MODULES}
 }
 
+mkimage_helper_embedded_config_helper_nonstandalone() {
+        # Build a non standalone GRUB, so that we can sign the config file in a post step, and also align to other versions of GRUB if need be
+	cd $GRUB_BUILDER_DIR
+	# grub-mkimage requires specifying modules explicitly
+	# minicmd has help, lsmod etc. One could include help, but there is no module for lsmod
+	: ${GRUB_MODULES="
+		part_gpt part_msdos ext2 linux normal boot memdisk configfile search fat ls cat echo test gcry_dsa gcry_rsa gcry_sha256 pubkey pgp \
+		tar minicmd efifwsetup
+		tpm hello lspci pcidump random \
+	"}
+
+        GRUB_MODULES="$GRUB_MODULES  "
+	: ${GRUB_TARGET_CONFIG_FILE_PREFIX_DIR="/EFI/Boot"}
+	grub-mkimage -O ${GRUB_TARGET}-efi -o ./${GRUB_IMAGE_PREFIX}${GRUB_IMAGE} --directory=./grub-core \
+		--disable-shim-lock \
+		--pubkey=$GRUB_PGP_PUBLIC_KEY \
+		--prefix=$GRUB_TARGET_CONFIG_FILE_PREFIX_DIR \
+		$GRUB_MODULES
+
+        return
+
+        # Their grub-mkimage, for a reference:
+	grub-mkimage -v -c ../cfg -p ${EFIDIR} -d ./grub-core/ \
+	               -O ${GRUB_TARGET}-efi -o ./${GRUB_IMAGE_PREFIX}${GRUB_IMAGE} \
+	               ${GRUB_MKIMAGE_MODULES}
+}
 do_mkimage() {
 
 
@@ -102,7 +128,12 @@ do_mkimage() {
         #GRUB_CONFIG=
         which grub-mkimage
         echo "*********************** ABOUT TO BUILD MY OWN GRUB ************************"
-        mkimage_helper_embedded_config_helper
+        bbnote "standalone=${GRUB_BUILD_STANDALONE_IMAGE}"
+        if [ "${GRUB_BUILD_STANDALONE_IMAGE}" = "true" ] ; then
+            mkimage_helper_embedded_config_helper
+        else
+            mkimage_helper_embedded_config_helper_nonstandalone
+        fi
         #bberror "not ready yet"
         return
 	# Search for the grub.cfg on the local boot media by using the

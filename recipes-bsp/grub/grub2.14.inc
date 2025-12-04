@@ -15,7 +15,8 @@ CVE_PRODUCT = "grub2"
 
 SRC_URI = "git://git.savannah.gnu.org/git/grub.git;protocol=https;branch=master"
 SRC_URI[sha256sum] = "afaec02c53c10df3ad3a596d07f51c74eb9c4a77ab57889fd7a15a935a56fb70"
-SRCREV = "2bc0929a2fffbb60995605db6ce46aa3f979a7d2"
+# SRCREV = "2bc0929a2fffbb60995605db6ce46aa3f979a7d2"
+SRCREV = "29f3131a3632c70129a29d924fcb8ac98f08ee2b"
 
 S = "${WORKDIR}/git"
 
