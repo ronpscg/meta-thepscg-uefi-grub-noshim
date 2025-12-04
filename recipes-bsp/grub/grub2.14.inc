@@ -13,7 +13,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 CVE_PRODUCT = "grub2"
 
-SRC_URI = "git://git.savannah.gnu.org/git/grub.git;protocol=https"
+SRC_URI = "git://git.savannah.gnu.org/git/grub.git;protocol=https;branch=master"
 SRC_URI[sha256sum] = "afaec02c53c10df3ad3a596d07f51c74eb9c4a77ab57889fd7a15a935a56fb70"
 SRCREV = "2bc0929a2fffbb60995605db6ce46aa3f979a7d2"
 
