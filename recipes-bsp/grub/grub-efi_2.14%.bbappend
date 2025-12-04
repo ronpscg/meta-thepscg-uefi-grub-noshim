@@ -74,6 +74,13 @@ mkimage_helper_embedded_config_helper_nonstandalone() {
 		--prefix=$GRUB_TARGET_CONFIG_FILE_PREFIX_DIR \
 		$GRUB_MODULES
 
+        bbdebug 2 "This was the command \ 
+	grub-mkimage -O ${GRUB_TARGET}-efi -o ./${GRUB_IMAGE_PREFIX}${GRUB_IMAGE} --directory=./grub-core \
+		--disable-shim-lock \
+		--pubkey=$GRUB_PGP_PUBLIC_KEY \
+		--prefix=$GRUB_TARGET_CONFIG_FILE_PREFIX_DIR \
+		$GRUB_MODULES"
+
         return
 
         # Their grub-mkimage, for a reference:

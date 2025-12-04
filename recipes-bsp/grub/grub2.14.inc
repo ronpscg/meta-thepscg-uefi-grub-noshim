@@ -13,15 +13,18 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 CVE_PRODUCT = "grub2"
 
-SRC_URI = "git://git.savannah.gnu.org/git/grub.git;protocol=https;branch=master"
-SRC_URI[sha256sum] = "afaec02c53c10df3ad3a596d07f51c74eb9c4a77ab57889fd7a15a935a56fb70"
+#SRC_URI = "git://git.savannah.gnu.org/git/grub.git;protocol=https;branch=master"
+#SRC_URI[sha256sum] = "afaec02c53c10df3ad3a596d07f51c74eb9c4a77ab57889fd7a15a935a56fb70"
 # SRCREV = "2bc0929a2fffbb60995605db6ce46aa3f979a7d2"
-SRCREV = "29f3131a3632c70129a29d924fcb8ac98f08ee2b"
+#SRCREV = "29f3131a3632c70129a29d924fcb8ac98f08ee2b"
 
-S = "${WORKDIR}/git"
+SRC_URI = "file:///home/ron/pscg/grub-2.14.1-bootstrapped-wip.tar.gz"
+
+S = "${WORKDIR}/grub-2.14.1-bootstrapped-wip"
 
 
 DEPENDS = "flex-native bison-native gettext-native"
+DEPENDS += "autoconf-archive-native"
 
 GRUB_COMPATIBLE_HOST = '(x86_64.*|i.86.*|arm.*|aarch64.*|riscv.*)-(linux.*|freebsd.*)'
 COMPATIBLE_HOST = "${GRUB_COMPATIBLE_HOST}"
@@ -72,6 +75,7 @@ BUILD_LDFLAGS = ""
 
 export PYTHON = "python3"
 
+# :prepend() {
 do_configure:prepend() {
         bbnote "Configuring from GIT. That would be grub-2.14-rc1 ${PN}"
 	cd ${S}
@@ -81,7 +85,9 @@ do_configure:prepend() {
 
         echo "---------------------"
         ls "${WORKDIR}"
-        ./bootstrap
-        ./autogen.sh
+        echo "----------------------"
+        ls "${S}"
+        ./bootstrap --skip-po --no-git --gnulib-srcdir=${S}/gnulib
+        #./autogen.sh
 	cd ${B}
 }
