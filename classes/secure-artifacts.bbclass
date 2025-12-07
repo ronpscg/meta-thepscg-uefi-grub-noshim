@@ -1,5 +1,7 @@
 # Directory where signed/verity artifacts will be placed
-ARTIFACTS_DIR = "${DEPLOY_DIR_IMAGE}/secure-boot-work"
+#do_secure_artifacts_setup[nostamp] = "1"
+#do_secure_artifacts[nostamp] = "1"
+
 
 # Where your scripts will be staged during the build
 SECURE_SCRIPTS_DIR = "${WORKDIR}/secure-scripts"
@@ -10,6 +12,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/secure-artifacts/files:"
 python do_secure_artifacts_setup() {
     import os, shutil
     bb.note("Noted Debug here")
+
+    d.setVar("ARTIFACTS_DIR", "${DEPLOY_DIR_IMAGE}/secure-boot-work${IMAGE_VERSION_SUFFIX}")
 
     d = locals()['d']
     workdir = d.getVar("ARTIFACTS_DIR")
@@ -32,9 +36,9 @@ python do_secure_artifacts_setup() {
             shutil.copy(src, dst)
             os.chmod(dst, 0o755)
     bb.note("Noted Debug there")
-    bb.note("ARTIFACTS_DIR", workdir)
-    bb.note("FILE_DIRNAME", files_dir)
-    bb.note("SECURE_SCRIPTS_DIR", scripts_dir)
+    bb.note("ARTIFACTS_DIR: ", workdir)
+    bb.note("FILE_DIRNAME: ", files_dir)
+    bb.note("SECURE_SCRIPTS_DIR: ", scripts_dir)
 }
 
 addtask do_secure_artifacts_setup before do_secure_artifacts
@@ -190,7 +194,9 @@ do_secure_artifacts2() {
 do_secure_artifacts() {
     bbnote "secure-artifacts: starting"
 
-    ARTIFACTS_DIR="${DEPLOY_DIR_IMAGE}/secure-boot-work"
+    #ARTIFACTS_DIR="${DEPLOY_DIR_IMAGE}/secure-boot-work"
+    ARTIFACTS_DIR="${DEPLOY_DIR_IMAGE}/secure-boot-work${IMAGE_VERSION_SUFFIX}"
+    echo "ARTIFACTS_DIR is ${ARTIFACTS_DIR}"
     mkdir -p "${ARTIFACTS_DIR}"
 
     SRC_DIR="${DEPLOY_DIR_IMAGE}"
@@ -230,6 +236,7 @@ do_secure_artifacts() {
         bbnote "secure-artifacts: EFI/GRUB image NOT FOUND (maybe your build doesn't produce one)"
     fi
 
+    ln -sTf $(basename ${ARTIFACTS_DIR}) ${DEPLOY_DIR_IMAGE}/secure-boot-work
     bbnote "secure-artifacts: finished - artifacts placed in ${ARTIFACTS_DIR}"
 
     return 0
