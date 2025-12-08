@@ -1,0 +1,43 @@
+This README file contains information on the contents of the meta-thepscg-uefi-grub-noshim layer.
+
+Please see the corresponding sections below for details.
+
+Dependencies
+============
+
+
+Patches
+=======
+
+Please submit any patches against the meta-thepscg-uefi-grub-noshim layer to the xxxx mailing list (xxxx@zzzz.org)
+and cc: the maintainer:
+
+Maintainer: Ron Munitz <ron@thepscg.com>
+
+Table of Contents
+=================
+
+  I. Adding the meta-thepscg-uefi-grub-noshim layer to your build
+ II. Misc
+
+
+I. Adding the meta-thepscg-uefi-grub-noshim layer to your build
+=================================================
+
+Run 'bitbake-layers add-layer meta-thepscg-uefi-grub-noshim'
+
+II. Misc
+========
+The layer separates creation and repackaging of LUKS+DM-VERITY images created from the Yocto build, as well as allows to auto-enroll them during run time.
+It builds a dracut based initramfs, that uses systemd-cryptsetup and systemd-veritysetup.
+
+To avoid brutal sudo violations during the creation of the images, the final disk image is created outside of this repository.
+Additional steps to built from within this layer can be done.
+
+To build the required image, after adding what you need in local.conf, run
+```
+bitbake signing-wip
+```
+
+You could run the alternative `kas` command, but a *kas* yaml file is included in another project that uses this layer.
+
