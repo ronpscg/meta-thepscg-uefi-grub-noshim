@@ -1,31 +1,18 @@
-DESCRIPTION = "Signing and secure-processing post build for core-image-minimal"
+DESCRIPTION = "Image building and preparation for signing and repackaging post processing"
 LICENSE = "MIT"
 
-# Make this an image-type recipe
 inherit core-image
+# Secure artifacts nicely prepares and separates relevant artifact builds for a postprocessing (Yocto external)
+# The post processing step could just get the respective files, but it does make it easier to keep track like this, per build (albeit a bit wasteful)
 inherit secure-artifacts
-
-# We do NOT create our own rootfs — we piggyback on core-image-minimal
-# This ensures our recipe does not try to build another filesystem.
-# IMAGE_INSTALL += "e2fsprogs pciutils usbutils vim-tiny"
-# IMAGE_INSTALL += "e2fsprogs"
 
 # This is what core-image-minimal does, and adds some room for systemd. I might do that too
 IMAGE_INSTALL = "packagegroup-core-boot ${CORE_IMAGE_EXTRA_INSTALL}"
-IMAGE_INSTALL += "e2fsprogs-ptest parted pciutils usbutils vim-tiny"
-# Installs tons of crap
-# So perhaps do this elsewhere, but for now let it build...
-# DISTRO_FEATURES:remove = "wifi bluetooth alsa pcmcia"
+IMAGE_INSTALL += "e2fsprogs-ptest parted"
+IMAGE_INSTALL += "pciutils usbutils vim-tiny"
 
-
-# Force this image to depend on core-image-minimal
-do_image[depends] += "core-image-minimal:do_image_complete"
-
-# And the other thing would be putting IMAGE_INSTALL before inherit core-image 
 IMAGE_ROOTFS_SIZE ?= "8192"
 IMAGE_ROOTFS_EXTRA_SPACE:append = "${@bb.utils.contains("DISTRO_FEATURES", "systemd", " + 4096", "", d)}"
-IMAGE_ROOTFS_EXTRA_SPACE:append = "${@bb.utils.contains("DISTRO_FEATURES", "systemd", " + 90096", "", d)}"
-
 
 #
 # Yocto defaults to 1024 bytes block sizes (to keep things minimal). dmverity must either be created with this block size, or alternatively, increase
@@ -36,6 +23,4 @@ IMAGE_ROOTFS_EXTRA_SPACE:append = "${@bb.utils.contains("DISTRO_FEATURES", "syst
 #    --hash-block-size=1024 \
 #    --format=1 \
 #   
-EXTRA_IMAGECMD:ext4 = "-b 4096"
-#
 EXTRA_IMAGECMD:ext4 = "-b 4096"

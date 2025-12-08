@@ -62,24 +62,30 @@ do_secure_artifacts() {
     cd $SRC_DIR
     
     KERNEL_FILE=${KERNEL_IMAGETYPE}
-    if [ -n "${KERNEL_FILE}" ]; then
+    if [ -L "${KERNEL_FILE}" ]; then
         bbnote "secure-artifacts: copying kernel -> ${KERNEL_FILE}"
         cp "${KERNEL_FILE}" "${ARTIFACTS_DIR}/"
     else
         bbwarn "secure-artifacts: kernel image NOT FOUND"
     fi
 
-    # 2) Initramfs — prefer INITRAMFS_IMAGE_FULL / INITRAMFS_IMAGE, else patterns
-    INITRAMFS_FILE=${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz  # need to rename the suffix probably
-    if [ -n "${INITRAMFS_FILE}" ]; then
+    INITRAMFS_FILE=${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz  # need to rename the suffix probably, to depend on variable initramfs type/suffix
+    if [ -L "${INITRAMFS_FILE}" ]; then
         bbnote "secure-artifacts: copying initramfs -> ${INITRAMFS_FILE}"
         cp "${INITRAMFS_FILE}" "${ARTIFACTS_DIR}/"
     else
-        bbnote "secure-artifacts: initramfs NOT FOUND (this may be normal if you didn't build one)"
+        bbnote "secure-artifacts: initramfs ${INITRAMFS_FILE} NOT FOUND (this may be normal if you didn't build one)"
+    fi
+
+    if [ -L "${INITRAMFS_IMAGE_CUSTOM}" ]; then
+        bbnote "secure-artifacts: copying initramfs -> ${INITRAMFS_IMAGE_CUSTOM}"
+        cp "${INITRAMFS_IMAGE_CUSTOM}" "${ARTIFACTS_DIR}/"
+    else
+        bbnote "secure-artifacts: initramfs ${INITRAMFS_IMAGE_CUSTOM} NOT FOUND (this may be normal if you didn't build one)"
     fi
 
     ROOTFS_FILE=$SRC_DIR/${IMAGE_LINK_NAME}.ext4
-    if [ -n "${ROOTFS_FILE}" ]; then
+    if [ -L "${ROOTFS_FILE}" ]; then
         bbnote "secure-artifacts: copying rootfs -> ${ROOTFS_FILE}"
         cp "${ROOTFS_FILE}" "${ARTIFACTS_DIR}/"
     else
@@ -87,11 +93,11 @@ do_secure_artifacts() {
     fi
     
     EFI_FILE=${EFI_PROVIDER}-bootx64.efi
-    if [ -n "${EFI_FILE}" ]; then
+    if [ -f "${EFI_FILE}" ]; then
         bbnote "secure-artifacts: copying efi/grub -> ${EFI_FILE}"
         cp "${EFI_FILE}" "${ARTIFACTS_DIR}/"
     else
-        bbnote "secure-artifacts: EFI/GRUB image NOT FOUND (maybe your build doesn't produce one)"
+        bbnote "secure-artifacts: EFI/GRUB image ${EFI_FILE} NOT FOUND (maybe your build doesn't produce one)"
     fi
 
     ln -sTf $(basename ${SECURE_ARTIFACTS_BASE_WORKDIR}) ${SECURE_ARTIFACTS_BASE_SYMLINK}
