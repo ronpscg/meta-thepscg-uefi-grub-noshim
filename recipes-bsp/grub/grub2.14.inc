@@ -75,6 +75,8 @@ BUILD_LDFLAGS = ""
 
 export PYTHON = "python3"
 
+FILES:${PN} += "/usr/share/bash-completion"
+
 # :prepend() {
 do_configure:prepend() {
         bbnote "Configuring from GIT. That would be grub-2.14-rc1 ${PN}"
