@@ -18,9 +18,10 @@ CVE_PRODUCT = "grub2"
 # SRCREV = "2bc0929a2fffbb60995605db6ce46aa3f979a7d2"
 #SRCREV = "29f3131a3632c70129a29d924fcb8ac98f08ee2b"
 
-SRC_URI = "file:///home/ron/pscg/grub-2.14.1-bootstrapped-wip.tar.gz"
+SRC_URI = "git://github.com/ronpscg/grub-2.14-rc1-bootstrapped-tarball-dont-do-these-things.git;protocol=https;branch=master"
+SRCREV = "${AUTOREV}"
 
-S = "${WORKDIR}/grub-2.14.1-bootstrapped-wip"
+S = "${WORKDIR}/git"
 
 
 DEPENDS = "flex-native bison-native gettext-native"
