@@ -85,5 +85,5 @@ do_deploy() {
     ln -sf ${PN}.initrd.img initrd.img
 }
 
+inherit deploy
 addtask deploy before do_build after do_compile
-
