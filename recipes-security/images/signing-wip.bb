@@ -8,8 +8,8 @@ inherit secure-artifacts
 
 # This is what core-image-minimal does, and adds some room for systemd. I might do that too
 IMAGE_INSTALL = "packagegroup-core-boot ${CORE_IMAGE_EXTRA_INSTALL}"
-IMAGE_INSTALL += "e2fsprogs-ptest parted"
-IMAGE_INSTALL += "pciutils usbutils vim-tiny"
+IMAGE_INSTALL += "e2fsprogs-badblocks e2fsprogs-dumpe2fs e2fsprogs-e2fsck e2fsprogs-mke2fs e2fsprogs-resize2fs e2fsprogs-tune2fs"
+IMAGE_INSTALL += "parted"
 
 IMAGE_ROOTFS_SIZE ?= "8192"
 IMAGE_ROOTFS_EXTRA_SPACE:append = "${@bb.utils.contains("DISTRO_FEATURES", "systemd", " + 4096", "", d)}"
